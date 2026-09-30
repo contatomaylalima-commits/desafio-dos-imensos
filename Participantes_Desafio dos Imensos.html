@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desafio dos Imensos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9eef0; --surface:#ffffff; --ink:#16243f; --muted:#5b6880; --line:#cdd6dc;
+  --g0:#1f9d66; --g1:#e39a00; --g2:#7a2e4f; --accent:#ffd23f; --accent-ink:#16243f;
+  --display:'Bowlby One','Impact','Arial Black',sans-serif;
+  --body:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#101a2e; --surface:#192640; --ink:#eef2f7; --muted:#9db0cc; --line:#2b3c5c;
+    --g0:#3fcf8e; --g1:#ffb72b; --g2:#e0799f; --accent:#ffd23f; --accent-ink:#16243f;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101a2e; --surface:#192640; --ink:#eef2f7; --muted:#9db0cc; --line:#2b3c5c;
+  --g0:#3fcf8e; --g1:#ffb72b; --g2:#e0799f; --accent:#ffd23f; --accent-ink:#16243f;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 56px}
+
+/* hero */
+.hero{padding:18px 0 8px}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(44px,13vw,84px);line-height:.95;margin:0;letter-spacing:-.01em}
+.hero p{margin:10px 0 0;color:var(--muted);font-size:17px}
+.next{margin-top:20px;background:var(--accent);color:var(--accent-ink);border-radius:14px;padding:14px 16px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.next b{font-family:var(--display);font-weight:400;font-size:34px;line-height:1}
+.next span{font-weight:600}
+
+h2{font-family:var(--display);font-weight:400;font-size:24px;margin:40px 0 12px}
+
+/* timeline */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:left;font:inherit;color:inherit;cursor:default}
+.step .d{font-weight:800;font-size:20px;line-height:1.1}
+.step .l{font-size:13px;color:var(--muted);margin-top:2px}
+.step .s{display:inline-block;margin-top:8px;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--bg);color:var(--muted)}
+.step.on{cursor:pointer}
+.step.on .s{background:var(--g0);color:#fff}
+.step.on:hover{border-color:var(--ink)}
+.step.sel{border:2px solid var(--ink);padding:11px}
+.step:focus-visible,.tab:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* group */
+.group{background:var(--surface);border:1px solid var(--line);border-radius:16px;margin:0 0 16px;overflow:hidden}
+.ghead{padding:14px 16px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ghead h3{font-family:var(--display);font-weight:400;font-size:20px;margin:0;line-height:1.1}
+.ghead .r{font-weight:600;font-size:14px;white-space:nowrap;opacity:.95}
+.g0 .ghead{background:#1f9d66}.g1 .ghead{background:#b87700}.g2 .ghead{background:#7a2e4f}
+ol{list-style:none;margin:0;padding:0}
+li{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line)}
+li:first-child{border-top:0}
+.pos{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px;background:var(--bg);color:var(--muted);flex:none}
+.lead .pos{background:var(--accent);color:var(--accent-ink)}
+.name{flex:1;font-weight:600;font-size:17px}
+.pct{font-weight:800;font-size:18px;font-variant-numeric:tabular-nums}
+.g0 .pct{color:var(--g0)}.g1 .pct{color:var(--g1)}.g2 .pct{color:var(--g2)}
+.none{color:var(--muted);font-weight:400;font-size:16px}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:14px 16px;color:var(--muted);margin:0 0 16px}
+
+/* overall */
+.top{display:grid;gap:8px}
+.top li{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.tag{font-size:13px;color:var(--muted)}
+
+.foot{margin-top:40px;color:var(--muted);font-size:14px}
+@media (max-width:420px){.ghead{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1 id="title"></h1>
+    <p id="sub"></p>
+    <div class="next" id="next"></div>
+  </header>
+
+  <h2>Pesagens</h2>
+  <div class="steps" id="steps"></div>
+
+  <h2 id="rankTitle">Classificação</h2>
+  <div id="groups"></div>
+
+  <div id="overallWrap" hidden>
+    <h2>Geral</h2>
+    <p class="tag" style="margin:-4px 0 12px">Os três que mais perderam peso em % entre todos os grupos.</p>
+    <ol class="top" id="overall"></ol>
+  </div>
+
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+/* ====== DADOS — para atualizar, é só mudar aqui ======
+   released: true libera a pesagem para todos verem.
+   pct: % de peso perdido desde o início, por pesagem. Ex.: {"1": 2.4, "2": 4.1} */
+const DATA = {"title":"Desafio dos Imensos","subtitle":"Desafio de emagrecimento","endDate":"2026-12-20","groups":[{"name":"IMENSOS","min":70,"max":85},{"name":"QUILOS MORTAIS","min":86,"max":101.8},{"name":"CAIXÃO E VELA PRETA","min":101.9,"max":120}],"weighIns":[{"n":1,"date":"2026-10-20","label":"1ª pesagem","released":false},{"n":2,"date":"2026-11-20","label":"2ª pesagem","released":false},{"n":3,"date":"2026-12-21","label":"Resultado final","released":false}],"people":[{"id":"p1","name":"Carla Steffany","group":0,"pct":{}},{"id":"p2","name":"Yasmin","group":0,"pct":{}},{"id":"p3","name":"Eliomara","group":0,"pct":{}},{"id":"p4","name":"Wildislane","group":0,"pct":{}},{"id":"p5","name":"Diogo","group":0,"pct":{}},{"id":"p6","name":"Luana","group":1,"pct":{}},{"id":"p7","name":"Ueslaine","group":1,"pct":{}},{"id":"p8","name":"Kelsen","group":1,"pct":{}},{"id":"p9","name":"Rafael","group":1,"pct":{}},{"id":"p10","name":"Marcos","group":1,"pct":{}},{"id":"p11","name":"João","group":2,"pct":{}},{"id":"p12","name":"Isaque","group":2,"pct":{}},{"id":"p13","name":"Carol","group":2,"pct":{}},{"id":"p14","name":"Tiago","group":2,"pct":{}}],"vault":null};
+/* ================================================== */
+
+const $ = id => document.getElementById(id);
+const parse = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
+const fmtDate = s => { const d = parse(s); return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0'); };
+const fmtKg = n => String(n).replace('.', ',');
+const fmtPct = n => '−' + Math.abs(n).toFixed(1).replace('.', ',') + '%';
+const today = new Date(); today.setHours(0,0,0,0);
+const daysTo = s => Math.round((parse(s) - today) / 86400000);
+
+const released = DATA.weighIns.filter(w => w.released);
+let selected = released.length ? released[released.length-1].n : null;
+
+function renderHero(){
+  $('title').textContent = DATA.title;
+  $('sub').textContent = DATA.subtitle + ' · termina em ' + fmtDate(DATA.endDate);
+  const upcoming = DATA.weighIns.filter(w => !w.released && daysTo(w.date) >= 0)[0];
+  const box = $('next');
+  if (upcoming){
+    const d = daysTo(upcoming.date);
+    const txt = d === 0 ? 'hoje' : d === 1 ? 'amanhã' : 'em ' + d + ' dias';
+    box.innerHTML = '<b>' + (d === 0 ? 'Hoje' : d) + '</b><span>' + (d === 0 ? 'é dia da ' : d === 1 ? 'dia até a ' : 'dias até a ') + upcoming.label.toLowerCase() + ' (' + fmtDate(upcoming.date) + ')</span>';
+  } else {
+    box.innerHTML = '<span>Todas as pesagens foram realizadas.</span>';
+  }
+}
+
+function renderSteps(){
+  $('steps').innerHTML = '';
+  DATA.weighIns.forEach(w => {
+    const b = document.createElement('button');
+    b.className = 'step' + (w.released ? ' on' : '') + (w.n === selected ? ' sel' : '');
+    b.disabled = !w.released;
+    b.innerHTML = '<div class="d">' + fmtDate(w.date) + '</div><div class="l">' + w.label + '</div><span class="s">' + (w.released ? 'Resultado liberado' : 'Aguardando') + '</span>';
+    if (w.released) b.onclick = () => { selected = w.n; renderSteps(); renderGroups(); };
+    $('steps').appendChild(b);
+  });
+}
+
+function renderGroups(){
+  const box = $('groups'); box.innerHTML = '';
+  const w = DATA.weighIns.find(x => x.n === selected);
+  $('rankTitle').textContent = w ? 'Classificação · ' + w.label.toLowerCase() : 'Classificação';
+  if (!w){
+    const e = document.createElement('div');
+    e.className = 'empty';
+    e.textContent = 'Os resultados aparecem aqui assim que a primeira pesagem for liberada.';
+    box.appendChild(e);
+  }
+  DATA.groups.forEach((g, gi) => {
+    const people = DATA.people.filter(p => p.group === gi);
+    const key = String(selected);
+    const withRes = people.filter(p => w && typeof p.pct[key] === 'number').sort((a,b) => b.pct[key] - a.pct[key]);
+    const without = people.filter(p => !(w && typeof p.pct[key] === 'number')).sort((a,b) => a.name.localeCompare(b.name,'pt-BR'));
+    const sec = document.createElement('section');
+    sec.className = 'group g' + gi;
+    sec.innerHTML = '<div class="ghead"><h3>' + g.name + '</h3><span class="r">' + fmtKg(g.min) + ' a ' + fmtKg(g.max) + ' kg</span></div>';
+    const ol = document.createElement('ol');
+    withRes.forEach((p,i) => {
+      const li = document.createElement('li');
+      if (i === 0) li.className = 'lead';
+      li.innerHTML = '<span class="pos">' + (i+1) + '</span><span class="name">' + p.name + '</span><span class="pct">' + fmtPct(p.pct[key]) + '</span>';
+      ol.appendChild(li);
+    });
+    without.forEach(p => {
+      const li = document.createElement('li');
+      li.innerHTML = '<span class="pos">–</span><span class="name">' + p.name + '</span><span class="pct none">' + (w ? 'sem resultado' : 'aguardando') + '</span>';
+      ol.appendChild(li);
+    });
+    sec.appendChild(ol);
+    box.appendChild(sec);
+  });
+  renderOverall();
+}
+
+function renderOverall(){
+  const key = String(selected);
+  const list = DATA.people.filter(p => typeof p.pct[key] === 'number').sort((a,b) => b.pct[key] - a.pct[key]).slice(0,3);
+  $('overallWrap').hidden = list.length === 0;
+  const ol = $('overall'); ol.innerHTML = '';
+  list.forEach((p,i) => {
+    const li = document.createElement('li');
+    if (i === 0) li.className = 'lead';
+    li.innerHTML = '<span class="pos">' + (i+1) + '</span><span class="name">' + p.name + '<div class="tag">' + DATA.groups[p.group].name + '</div></span><span class="pct g' + p.group + '">' + fmtPct(p.pct[key]) + '</span>';
+    ol.appendChild(li);
+  });
+}
+
+function renderFoot(){
+  $('foot').textContent = 'A classificação usa a porcentagem de peso perdido, para comparar quem está em faixas de peso diferentes. Cada resultado aparece só depois que a pesagem é liberada.';
+}
+
+renderHero(); renderSteps(); renderGroups(); renderFoot();
+</script>
+</body>
+</html>
