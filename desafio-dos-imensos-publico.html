@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desafio dos Imensos</title>
+<style id="css">
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#f5f2ec;--card:#ffffff;--ink:#17231d;--muted:#6a7870;--line:#e6e1d5;
+  --accent:#1f7a4d;--accent2:#0f4d31;--accent-ink:#ffffff;--soft:#eaf4ee;
+  --win:#1f7a4d;--lose:#c0392b;--hl:#fff1bd;--danger:#b3372f;
+  --g0:#1f7a4d;--g1:#2a6fb0;--g2:#b8651b;
+  --shadow:0 6px 24px rgba(23,35,29,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1512;--card:#18211c;--ink:#eef3ef;--muted:#96a69c;--line:#27342c;
+    --accent:#3fb37a;--accent2:#1c5c3d;--accent-ink:#07150d;--soft:#1d2b23;
+    --win:#4cc48a;--lose:#ef7a6c;--hl:#4a4113;--danger:#e0706a;
+    --g0:#3fb37a;--g1:#5aa2e6;--g2:#e59a4a;--shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1512;--card:#18211c;--ink:#eef3ef;--muted:#96a69c;--line:#27342c;
+  --accent:#3fb37a;--accent2:#1c5c3d;--accent-ink:#07150d;--soft:#1d2b23;
+  --win:#4cc48a;--lose:#ef7a6c;--hl:#4a4113;--danger:#e0706a;
+  --g0:#3fb37a;--g1:#5aa2e6;--g2:#e59a4a;--shadow:none;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:14px 14px 110px}
+.hero{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;border-radius:24px;padding:26px 22px 22px;box-shadow:var(--shadow);position:relative;overflow:hidden;margin-bottom:16px}
+.hero:after{content:"";position:absolute;right:-50px;top:-50px;width:190px;height:190px;border-radius:50%;background:rgba(255,255,255,.09)}
+.hero:before{content:"";position:absolute;right:40px;bottom:-70px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.06)}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;font-weight:600}
+.hero h1{font-size:30px;margin:6px 0 2px;letter-spacing:-.02em;line-height:1.1;position:relative;z-index:1}
+.hero p{margin:0;opacity:.9;font-size:15px;position:relative;z-index:1}
+.hero .cd{display:flex;align-items:flex-end;gap:10px;margin-top:18px;position:relative;z-index:1}
+.hero .cd b{font-size:46px;line-height:.9;font-weight:800}
+.hero .cd span{font-size:14px;opacity:.9;padding-bottom:3px}
+.hero .end{margin-left:auto;text-align:right;font-size:13px;opacity:.9;padding-bottom:3px}
+.sect{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:22px 4px 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.timeline{display:flex;gap:0;overflow-x:auto;padding:4px 2px 2px}
+.ms{flex:1;min-width:92px;text-align:center;position:relative;padding:0 4px}
+.ms:not(:last-child):after{content:"";position:absolute;top:15px;left:calc(50% + 16px);right:calc(-50% + 16px);height:3px;background:var(--line);border-radius:3px}
+.ms.done:not(:last-child):after{background:var(--accent)}
+.ms .pt{width:32px;height:32px;border-radius:50%;margin:0 auto 8px;display:grid;place-items:center;background:var(--bg);border:3px solid var(--line);font-size:14px;font-weight:700;color:var(--muted);position:relative;z-index:1}
+.ms.done .pt{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ms.next .pt{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 5px var(--soft)}
+.ms b{display:block;font-size:13px}
+.ms small{color:var(--muted);font-size:12px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px}
+.tab{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer}
+.tab.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.gc{border-radius:20px;background:var(--card);border:1px solid var(--line);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow)}
+.gh{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.gh i{width:6px;align-self:stretch;border-radius:6px;flex:none}
+.gh h3{margin:0;font-size:17px;letter-spacing:-.01em}
+.gh span{margin-left:auto;font-size:12px;color:var(--muted)}
+.rk{list-style:none;margin:0;padding:6px 8px 10px}
+.rk li{display:flex;align-items:center;gap:12px;padding:11px 8px;border-radius:14px}
+.rk li+li{border-top:1px solid var(--line)}
+.rk li.hl{background:var(--hl)}
+.pos{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:15px;background:var(--bg);color:var(--muted);flex:none}
+.pos.m{background:transparent;font-size:24px}
+.nm{font-weight:650;font-size:16px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nm small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.res{margin-left:auto;text-align:right;flex:none}
+.res b{display:block;font-size:17px}
+.res small{font-size:12px;color:var(--muted)}
+.res.win b{color:var(--win)}
+.res.lose b{color:var(--lose)}
+.res.none b{color:var(--muted);font-weight:500}
+.mv{font-size:12px;font-weight:700;margin-left:6px}
+.mv.up{color:var(--win)}.mv.dn{color:var(--lose)}
+.empty{color:var(--muted);font-size:14px;padding:12px 8px}
+.banner{background:var(--hl);border-radius:16px;padding:14px 16px;margin-bottom:14px}
+input,select,button{font:inherit;color:var(--ink)}
+input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+input:focus,select:focus{outline:2px solid var(--accent)}
+input.need{border-color:var(--lose)}
+label{display:block;font-size:12px;color:var(--muted);margin:0 0 4px;font-weight:600}
+.row{display:flex;gap:10px;margin-bottom:10px}
+.row>div{flex:1;min-width:0}
+button{border:0;border-radius:12px;padding:12px 16px;background:var(--accent);color:var(--accent-ink);font-weight:700;cursor:pointer}
+button.del{background:transparent;color:var(--danger);padding:2px 8px;font-size:22px;line-height:1}
+.owner-tag{display:inline-block;font-size:12px;background:var(--ink);color:var(--bg);border-radius:20px;padding:3px 12px;margin:2px 0 12px;font-weight:700}
+.note{font-size:13px;color:var(--muted);margin:8px 0 0}
+.pe{border-top:1px solid var(--line);padding:12px 0}
+.pe:first-of-type{border-top:0}
+.pe .top{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.pe .top b{flex:1}
+.pe .top select{width:auto;padding:6px 8px;font-size:13px}
+.wg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.savebar{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;justify-content:space-between;z-index:5}
+.savebar span{font-size:14px;color:var(--muted)}
+.hidden{display:none}
+.chk{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:6px}
+.chk input{width:auto}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script id="state" type="application/json">{"title": "Desafio dos Imensos", "subtitle": "Desafio de emagrecimento", "endDate": "2026-12-20", "groups": [{"name": "IMENSOS", "min": null, "max": null}, {"name": "QUILOS MORTAIS", "min": null, "max": null}, {"name": "CAIXÃO E VELA PRETA", "min": null, "max": null}], "weighIns": [{"n": 1, "date": "2026-10-20", "label": "1ª pesagem", "released": false}, {"n": 2, "date": "2026-11-20", "label": "2ª pesagem", "released": false}, {"n": 3, "date": "2026-12-21", "label": "Resultado final", "released": false}], "people": [{"id": "p1", "name": "Carla Steffany", "group": 0, "pct": {}}, {"id": "p2", "name": "Yasmin", "group": 0, "pct": {}}, {"id": "p3", "name": "Eliomara", "group": 0, "pct": {}}, {"id": "p4", "name": "Wildislane", "group": 0, "pct": {}}, {"id": "p5", "name": "Diogo", "group": 0, "pct": {}}, {"id": "p6", "name": "Luana", "group": 1, "pct": {}}, {"id": "p7", "name": "Ueslaine", "group": 1, "pct": {}}, {"id": "p8", "name": "Kelsen", "group": 1, "pct": {}}, {"id": "p9", "name": "Rafael", "group": 1, "pct": {}}, {"id": "p10", "name": "Marcos", "group": 1, "pct": {}}, {"id": "p11", "name": "João", "group": 2, "pct": {}}, {"id": "p12", "name": "Isaque", "group": 2, "pct": {}}, {"id": "p13", "name": "Carol", "group": 2, "pct": {}}, {"id": "p14", "name": "Tiago", "group": 2, "pct": {}}], "vault": null}</script>
+<script id="app">
+(function(){
+  var saved = JSON.parse(document.getElementById('state').textContent);
+  var draft = JSON.parse(JSON.stringify(saved));
+  var isOwner = false, artifact = null, unlocked = false, pass = '', lockErr = '', busy = false;
+  var dirty = false, msg = '', search = '', selN = null;
+  var weights = {}; // privado: {personId:{w0,w1,w2,w3}} (vai criptografado no vault)
+  var enc = new TextEncoder(), dec = new TextDecoder();
+  function b64(buf){ var a = new Uint8Array(buf), s = ''; for (var i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s); }
+  function unb64(s){ var b = atob(s), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
+  async function deriveKey(p, salt){
+    var km = await crypto.subtle.importKey('raw', enc.encode(p), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({name:'PBKDF2', salt:salt, iterations:250000, hash:'SHA-256'}, km, {name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
+  }
+  async function encryptW(p, obj){
+    var salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    var key = await deriveKey(p, salt);
+    var ct = await crypto.subtle.encrypt({name:'AES-GCM', iv:iv}, key, enc.encode(JSON.stringify(obj)));
+    return {s:b64(salt), i:b64(iv), d:b64(ct)};
+  }
+  async function decryptW(p, v){
+    var key = await deriveKey(p, unb64(v.s));
+    var pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:unb64(v.i)}, key, unb64(v.d));
+    return JSON.parse(dec.decode(pt));
+  }
+  var root = document.getElementById('root');
+  var MONTHS = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  var MEDALS = ['🥇','🥈','🥉'];
+
+  function h(tag, attrs){
+    var el = document.createElement(tag);
+    if (attrs) for (var k in attrs){
+      if (k === 'class') el.className = attrs[k];
+      else if (k.slice(0,2) === 'on') el.addEventListener(k.slice(2), attrs[k]);
+      else if (k === 'value') el.value = attrs[k];
+      else if (k === 'checked') el.checked = !!attrs[k];
+      else el.setAttribute(k, attrs[k]);
+    }
+    for (var i = 2; i < arguments.length; i++){
+      var c = arguments[i];
+      if (c == null || c === false) continue;
+      el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    }
+    return el;
+  }
+  function norm(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); }
+  function num(v){ v = String(v).replace(',', '.'); var n = parseFloat(v); return isNaN(n) ? null : n; }
+  function pctStr(v){ return Math.abs(v).toFixed(2).replace('.', ',') + '%'; }
+  function parseDate(s){ var p = s.split('-'); return new Date(+p[0], +p[1]-1, +p[2], 23, 59, 59); }
+  function dShort(s){ if (!s) return ''; var p = s.split('-'); return p[2] + ' ' + MONTHS[+p[1]-1]; }
+  function dFull(s){ if (!s) return ''; var p = s.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+  function daysLeft(){ if (!draft.endDate) return null; return Math.ceil((parseDate(draft.endDate) - new Date()) / 86400000); }
+  function markDirty(){ dirty = true; msg = ''; bar(); }
+
+  function computePct(){
+    draft.people.forEach(function(p){
+      var w = weights[p.id] || {};
+      p.pct = {};
+      draft.weighIns.forEach(function(wi){
+        var a = w.w0, b = w['w' + wi.n];
+        if (a > 0 && b > 0) p.pct[wi.n] = Math.round(((a - b) / a) * 10000) / 100;
+      });
+    });
+  }
+  function suggestGroup(w){
+    for (var i = 0; i < draft.groups.length; i++){
+      var g = draft.groups[i];
+      if (g.min != null && g.max != null && w >= g.min && w <= g.max) return i;
+    }
+    return -1;
+  }
+  function shownWeighIns(all){
+    return draft.weighIns.filter(function(w){ return all || w.released; });
+  }
+  function ranking(gi, n){
+    var list = draft.people.filter(function(p){ return p.group === gi; });
+    var withP = list.filter(function(p){ return p.pct && p.pct[n] != null; }).sort(function(a,b){ return b.pct[n] - a.pct[n]; });
+    var without = list.filter(function(p){ return !(p.pct && p.pct[n] != null); });
+    return {ranked: withP, unranked: without};
+  }
+  function posIn(gi, n, id){
+    var r = ranking(gi, n).ranked;
+    for (var i = 0; i < r.length; i++) if (r[i].id === id) return i + 1;
+    return null;
+  }
+
+  function hero(){
+    var d = daysLeft();
+    var cd = h('div', {class:'cd'});
+    if (d != null){
+      if (d > 0) cd.appendChild(h('div', null, h('b', null, String(d))));
+      else cd.appendChild(h('div', null, h('b', null, d === 0 ? 'Hoje' : '🏁')));
+      cd.appendChild(h('span', null, d > 1 ? 'dias para o fim' : d === 1 ? 'dia para o fim' : d === 0 ? 'é o último dia!' : 'desafio encerrado'));
+      cd.appendChild(h('div', {class:'end'}, 'Último dia', h('br'), h('b', {style:'font-size:15px'}, dFull(draft.endDate))));
+    }
+    return h('div', {class:'hero'}, h('div', {class:'eyebrow'}, draft.subtitle || 'Desafio'), h('h1', null, draft.title), cd);
+  }
+
+  function timeline(){
+    var now = new Date();
+    var items = [{label:'Início', date:null, n:0}].concat(draft.weighIns);
+    var nextIdx = -1;
+    items.forEach(function(it, i){ if (nextIdx < 0 && it.date && parseDate(it.date) >= now) nextIdx = i; });
+    var box = h('div', {class:'timeline'});
+    items.forEach(function(it, i){
+      var done = it.n === 0 ? true : (it.date && parseDate(it.date) < now);
+      var cls = 'ms' + (done ? ' done' : '') + (i === nextIdx ? ' next' : '');
+      box.appendChild(h('div', {class:cls}, h('div', {class:'pt'}, done ? '✓' : String(i)),
+        h('b', null, it.n === 0 ? 'Pesagem inicial' : it.label), h('small', null, it.n === 0 ? 'Ponto de partida' : dShort(it.date))));
+    });
+    return h('div', {class:'card'}, box);
+  }
+
+  function groupBoard(g, gi, n, prevN){
+    var r = ranking(gi, n);
+    var ul = h('ul', {class:'rk'});
+    if (!draft.people.some(function(p){ return p.group === gi; })) ul.appendChild(h('li', {class:'empty'}, 'Ninguém neste grupo ainda'));
+    var q = norm(search);
+    function line(p, pos){
+      var v = p.pct ? p.pct[n] : null;
+      var has = v != null;
+      var cls = has ? (v > 0 ? 'win' : v < 0 ? 'lose' : 'none') : 'none';
+      var mv = null;
+      if (has && prevN != null && p.pct[prevN] != null){
+        var pp = posIn(gi, prevN, p.id);
+        if (pp != null && pos != null){
+          var dlt = pp - pos;
+          if (dlt > 0) mv = h('span', {class:'mv up'}, '▲' + dlt);
+          else if (dlt < 0) mv = h('span', {class:'mv dn'}, '▼' + Math.abs(dlt));
+        }
+      }
+      var top = pos != null && pos <= 3 && v > 0;
+      var li = h('li', {class: q && norm(p.name).indexOf(q) >= 0 ? 'hl' : ''},
+        h('div', {class:'pos' + (top ? ' m' : '')}, top ? MEDALS[pos-1] : (pos != null ? String(pos) : '–')),
+        h('div', {class:'nm'}, p.name, mv),
+        h('div', {class:'res ' + cls},
+          h('b', null, !has ? 'aguardando' : v > 0 ? 'Perdeu ' + pctStr(v) : v < 0 ? 'Ganhou ' + pctStr(v) : 'Manteve'),
+          has ? h('small', null, 'vs. pesagem inicial') : null));
+      ul.appendChild(li);
+    }
+    r.ranked.forEach(function(p, i){ line(p, i + 1); });
+    r.unranked.forEach(function(p){ line(p, null); });
+    return h('div', {class:'gc'},
+      h('div', {class:'gh'}, h('i', {style:'background:var(--g' + gi + ')'}), h('h3', null, g.name), h('span', null, draft.people.filter(function(p){ return p.group === gi; }).length + ' participantes')), ul);
+  }
+
+  function board(all){
+    var out = [];
+    var wis = shownWeighIns(all);
+    if (!wis.length){
+      out.push(h('div', {class:'card'}, h('b', null, '🏆 O ranking aparece aqui'),
+        h('p', {class:'note', style:'margin-top:6px'}, 'Depois de cada pesagem, o ranking de cada grupo é divulgado com a variação em % em relação à pesagem inicial.')));
+      return out;
+    }
+    if (selN == null || !wis.some(function(w){ return w.n === selN; })) selN = wis[wis.length - 1].n;
+    var tabs = h('div', {class:'tabs'});
+    wis.forEach(function(w){
+      tabs.appendChild(h('button', {class:'tab' + (w.n === selN ? ' on' : ''), onclick:function(){ selN = w.n; render(); }}, w.n === 3 ? 'Resultado' : w.label));
+    });
+    out.push(h('div', {class:'sect'}, 'Ranking'), tabs);
+    var cur = draft.weighIns.filter(function(w){ return w.n === selN; })[0];
+    var prevN = null;
+    wis.forEach(function(w){ if (w.n < selN) prevN = w.n; });
+    if (cur.n === 3) out.push(h('div', {class:'banner'}, '🏁 Resultado final: quem mais perdeu % do peso inicial em cada grupo.'));
+    if (!isOwner && search){
+      var f = draft.people.filter(function(p){ return norm(p.name).indexOf(norm(search)) >= 0; });
+      if (f.length === 1) out.push(h('div', {class:'banner'}, 'Você compete em ', h('b', null, draft.groups[f[0].group].name), '.'));
+    }
+    draft.groups.forEach(function(g, gi){ out.push(groupBoard(g, gi, selN, prevN)); });
+    return out;
+  }
+
+  function searchBox(){
+    var inp = h('input', {type:'search', placeholder:'Buscar seu nome…', value:search, 'aria-label':'Buscar seu nome'});
+    inp.addEventListener('input', function(e){
+      search = e.target.value; var pos = e.target.selectionStart; render();
+      var n = root.querySelector('input[type=search]'); if (n){ n.focus(); try{ n.setSelectionRange(pos,pos); }catch(_){} }
+    });
+    return h('div', {class:'card', style:'padding:12px'}, inp);
+  }
+
+  function viewerUI(){
+    var out = [hero(), timeline(), searchBox()];
+    return out.concat(board(false));
+  }
+
+  function lockCard(){
+    var has = !!draft.vault;
+    var inp = h('input', {type:'password', placeholder: has ? 'Sua senha' : 'Crie uma senha (mínimo 8 caracteres)', autocomplete:'off'});
+    var err = h('p', {class:'note', style:'color:var(--danger)'}, lockErr);
+    async function go(){
+      var p = inp.value;
+      if (!p || (!has && p.length < 8)){ err.textContent = has ? 'Digite a senha.' : 'Use pelo menos 8 caracteres.'; return; }
+      try{
+        if (has) weights = await decryptW(p, draft.vault); else weights = {};
+      }catch(e){ err.textContent = 'Senha incorreta.'; return; }
+      pass = p; unlocked = true; lockErr = ''; render();
+    }
+    inp.addEventListener('keydown', function(e){ if (e.key === 'Enter') go(); });
+    return h('div', {class:'card'}, h('h2', {style:'font-size:17px;margin:0 0 6px'}, has ? '🔒 Digite sua senha' : '🔐 Crie uma senha para os pesos'),
+      h('p', {class:'note', style:'margin:0 0 12px'}, has ? 'Os pesos ficam criptografados. Só quem tem a senha consegue abrir.' : 'Os pesos serão guardados criptografados com essa senha. Use uma senha longa e anote: se esquecer, os pesos não podem ser recuperados.'),
+      h('div', {class:'row'}, h('div', null, inp)), h('button', {onclick:go}, has ? 'Desbloquear' : 'Criar senha e continuar'), err);
+  }
+
+  function ownerUI(){
+    var out = [h('span', {class:'owner-tag'}, '⚙️ Modo organizador'), hero()];
+    if (!unlocked) return out.concat([lockCard()]);
+
+    // config
+    var cfg = h('div', {class:'card'}, h('h2', {style:'font-size:17px;margin:0 0 12px'}, 'Configurações'),
+      h('div', {class:'row'}, h('div', null, h('label', null, 'Título'), h('input', {value:draft.title, oninput:function(e){ draft.title = e.target.value; markDirty(); }}))),
+      h('div', {class:'row'}, h('div', null, h('label', null, 'Subtítulo'), h('input', {value:draft.subtitle || '', oninput:function(e){ draft.subtitle = e.target.value; markDirty(); }}))),
+      h('div', {class:'row'}, h('div', null, h('label', null, 'Último dia do desafio'), h('input', {type:'date', value:draft.endDate || '', onchange:function(e){ draft.endDate = e.target.value; markDirty(); render(); }}))));
+    out.push(cfg);
+
+    // groups
+    var gc = h('div', {class:'card'}, h('h2', {style:'font-size:17px;margin:0 0 12px'}, 'Grupos e faixas de peso (kg)'));
+    draft.groups.forEach(function(g, gi){
+      gc.appendChild(h('div', {class:'row', style:'align-items:end'},
+        h('div', {style:'flex:2'}, h('label', null, 'Grupo ' + (gi+1)), h('input', {value:g.name, oninput:function(e){ g.name = e.target.value; markDirty(); }})),
+        h('div', null, h('label', null, 'De'), h('input', {type:'number', inputmode:'decimal', step:'0.1', value:g.min == null ? '' : g.min, oninput:function(e){ g.min = num(e.target.value); markDirty(); }})),
+        h('div', null, h('label', null, 'Até'), h('input', {type:'number', inputmode:'decimal', step:'0.1', value:g.max == null ? '' : g.max, oninput:function(e){ g.max = num(e.target.value); markDirty(); }}))));
+    });
+    out.push(gc);
+
+    // weigh-ins
+    var wc = h('div', {class:'card'}, h('h2', {style:'font-size:17px;margin:0 0 4px'}, 'Marcos de pesagem'),
+      h('p', {class:'note', style:'margin:0 0 12px'}, 'Marque “Divulgar” quando quiser que o ranking daquela pesagem apareça para todos.'));
+    draft.weighIns.forEach(function(w){
+      wc.appendChild(h('div', {class:'pe'},
+        h('div', {class:'row', style:'margin-bottom:4px'},
+          h('div', {style:'flex:2'}, h('label', null, 'Nome'), h('input', {value:w.label, oninput:function(e){ w.label = e.target.value; markDirty(); }})),
+          h('div', null, h('label', null, 'Data'), h('input', {type:'date', value:w.date, onchange:function(e){ w.date = e.target.value; markDirty(); render(); }}))),
+        h('label', {class:'chk'}, h('input', {type:'checkbox', checked:w.released, onchange:function(e){ w.released = e.target.checked; markDirty(); render(); }}), 'Divulgar ranking no app')));
+    });
+    out.push(wc);
+
+    // add participant
+    var nameIn = h('input', {placeholder:'Nome do participante'});
+    var wIn = h('input', {type:'number', inputmode:'decimal', step:'0.1', placeholder:'Peso inicial (kg)'});
+    var gSel = h('select', null, h('option', {value:'-1'}, 'Grupo automático'));
+    draft.groups.forEach(function(g, k){ gSel.appendChild(h('option', {value:String(k)}, g.name)); });
+    var err = h('p', {class:'note', style:'color:var(--danger)'}, '');
+    out.push(h('div', {class:'card'}, h('h2', {style:'font-size:17px;margin:0 0 12px'}, 'Novo participante (' + draft.people.length + '/20)'),
+      h('div', {class:'row'}, h('div', null, nameIn)),
+      h('div', {class:'row'}, h('div', null, wIn), h('div', null, gSel)),
+      h('button', {onclick:function(){
+        var n = nameIn.value.trim(), w = num(wIn.value), gi = +gSel.value;
+        if (!n){ err.textContent = 'Digite o nome.'; return; }
+        if (w == null){ err.textContent = 'Informe o peso inicial.'; return; }
+        if (gi < 0){ gi = suggestGroup(w); if (gi < 0){ err.textContent = 'Esse peso não cabe em nenhuma faixa. Escolha o grupo manualmente.'; return; } }
+        var id = 'p' + Date.now().toString(36);
+        draft.people.push({id:id, name:n, group:gi, pct:{}});
+        weights[id] = {w0:w};
+        markDirty(); render();
+      }}, 'Adicionar'), err));
+
+    // weights per person
+    var pc = h('div', {class:'card'}, h('h2', {style:'font-size:17px;margin:0 0 4px'}, '⚖️ Pesos (só você vê)'),
+      h('p', {class:'note', style:'margin:0 0 8px'}, 'A % de cada pesagem é calculada sobre o peso inicial. Só a % vai para o app público; os pesos ficam criptografados com a sua senha.'));
+    var heads = [{k:'w0', t:'Inicial'}].concat(draft.weighIns.map(function(w){ return {k:'w' + w.n, t:dShort(w.date)}; }));
+    draft.groups.forEach(function(g, gi){
+      var mem = draft.people.filter(function(p){ return p.group === gi; });
+      if (!mem.length) return;
+      pc.appendChild(h('div', {class:'sect', style:'margin:14px 0 4px'}, g.name));
+      mem.forEach(function(p){
+        var w = weights[p.id] || (weights[p.id] = {});
+        var sel = h('select', {onchange:function(e){ p.group = +e.target.value; markDirty(); render(); }});
+        draft.groups.forEach(function(gg, k){ var o = h('option', {value:String(k)}, gg.name); if (k === p.group) o.selected = true; sel.appendChild(o); });
+        var grid = h('div', {class:'wg'});
+        heads.forEach(function(hd){
+          var inp = h('input', {type:'number', inputmode:'decimal', step:'0.1', value:w[hd.k] == null ? '' : w[hd.k], class:(hd.k === 'w0' && w.w0 == null) ? 'need' : '',
+            oninput:function(e){ var v = num(e.target.value); if (v == null) delete w[hd.k]; else w[hd.k] = v; markDirty(); }});
+          grid.appendChild(h('div', null, h('label', null, hd.t), inp));
+        });
+        pc.appendChild(h('div', {class:'pe'}, h('div', {class:'top'}, h('b', null, p.name), sel,
+          h('button', {class:'del', title:'Remover', onclick:function(){ draft.people = draft.people.filter(function(x){ return x.id !== p.id; }); delete weights[p.id]; markDirty(); render(); }}, '×')), grid));
+      });
+    });
+    out.push(pc);
+
+    computePct();
+    var pub = JSON.stringify(Object.assign({}, draft, {vault:null}));
+    var ta = h('textarea', {readonly:'readonly', rows:'4', style:'width:100%;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font-size:12px'});
+    ta.value = pub;
+    var cmsg = h('p', {class:'note'}, '');
+    out.push(h('div', {class:'card'}, h('h2', {style:'font-size:17px;margin:0 0 4px'}, '📤 Atualizar o link público'),
+      h('p', {class:'note', style:'margin:0 0 10px'}, 'Copie estes dados (sem pesos, só nomes, grupos e %) e cole no chat com o Claude para atualizar a página dos participantes.'),
+      ta, h('div', {style:'height:10px'}),
+      h('button', {onclick:function(){
+        ta.select();
+        var ok = false;
+        try{ ok = document.execCommand('copy'); }catch(e){}
+        if (!ok && navigator.clipboard){ navigator.clipboard.writeText(pub).then(function(){ cmsg.textContent = 'Copiado!'; }, function(){ cmsg.textContent = 'Toque e segure no texto para copiar.'; }); return; }
+        cmsg.textContent = ok ? 'Copiado!' : 'Toque e segure no texto para copiar.';
+      }}, 'Copiar dados'), cmsg));
+    // preview
+    out.push(h('div', {class:'sect'}, 'Prévia do que os participantes veem'), timeline());
+    out = out.concat(board(true));
+    return out;
+  }
+
+  var barEl = null;
+  function bar(){
+    if (!barEl) return;
+    barEl.classList.toggle('hidden', !dirty && !msg);
+    barEl.querySelector('span').textContent = msg || 'Alterações não publicadas';
+    barEl.querySelector('button').classList.toggle('hidden', !dirty);
+  }
+
+  function makeDoc(state){
+    var json = JSON.stringify(state).replace(/</g, '\\u003c');
+    var css = document.getElementById('css').textContent;
+    var app = document.getElementById('app').textContent;
+    var S = '<' + 'script', E = '<' + '/script>';
+    return '<!doctype html>\n<html lang="pt-BR">\n<head>\n<meta charset="utf-8">\n' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n' +
+      '<title>' + state.title.replace(/</g, '&lt;') + '</title>\n<style id="css">' + css + '</style>\n</head>\n<body>\n' +
+      '<div class="wrap" id="root"></div>\n' +
+      S + ' id="state" type="application/json">' + json + E + '\n' +
+      S + ' id="app">' + app + E + '\n</body>\n</html>';
+  }
+
+  async function publish(){
+    if (!artifact) return;
+    msg = 'Publicando…'; bar();
+    try{
+      computePct();
+      draft.vault = await encryptW(pass, weights);
+      await artifact.publish(makeDoc(draft));
+    }catch(e){
+      msg = (e && e.code === 'conflict') ? 'Outra versão foi publicada. Recarregando…' : 'Erro ao salvar: ' + ((e && e.message) || e);
+      dirty = true; bar();
+    }
+  }
+
+  function render(){
+    var y = window.scrollY;
+    root.textContent = '';
+    var ui = isOwner ? ownerUI() : viewerUI();
+    ui.forEach(function(n){ if (n) root.appendChild(n); });
+    if (isOwner){
+      barEl = h('div', {class:'savebar hidden'}, h('span', null, ''), h('button', {onclick:publish}, 'Salvar e publicar'));
+      root.appendChild(barEl); bar();
+      window.scrollTo(0, y);
+    }
+  }
+
+  render();
+
+  (async function(){
+    try{
+      if (!window.claude || !claude.use) return;
+      var user = await claude.use('user');
+      if (user && user.isOwner()){
+        artifact = await claude.use('artifact');
+        if (artifact){
+          isOwner = true;
+          render();
+        }
+      }
+    }catch(e){ /* somente leitura */ }
+  })();
+})();
+</script>
+</body>
+</html>
